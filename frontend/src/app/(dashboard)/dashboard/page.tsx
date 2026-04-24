@@ -1,72 +1,90 @@
 "use client";
 
 import { useConfigStore } from "@/store/useConfigStore";
+import { JMPChartGroup } from "@/components/ui/chart/JMPChartGroup";
+import { IndicatorChartSelector } from "@/components/ui/chart/IndicatorChartSelector";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { Building2, PieChart, ZoomIn } from "lucide-react";
 
 export default function DashboardPage() {
   const { branding, dashboard, isLoading, error } = useConfigStore();
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-32 w-full rounded-2xl" />
+          ))}
+        </div>
+        <Skeleton className="h-150 w-full rounded-2xl" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl">
-        Error: {error}
+      <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-2xl flex items-center gap-3">
+        <div className="bg-red-100 p-2 rounded-lg">⚠️</div>
+        <div>
+          <p className="font-bold text-sm uppercase tracking-wider">Error Loading Configuration</p>
+          <p className="text-sm opacity-80">{error}</p>
+        </div>
       </div>
     );
   }
 
-  return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Instance</h3>
-          <p className="text-2xl font-bold text-gray-900">{branding?.clientName}</p>
-        </div>
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Charts Configured</h3>
-          <p className="text-2xl font-bold text-gray-900">
-            {dashboard?.tabs.reduce((acc, tab) => acc + tab.chartList.length, 0) || 0}
-          </p>
-        </div>
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">GIS Zoom Level</h3>
-          <p className="text-2xl font-bold text-gray-900">{branding?.gis.zoom}</p>
-        </div>
-      </div>
+  const jmpCharts = dashboard?.tabs.find((t) => t.component === "JMP-CHARTS")?.chartList || [];
+  const genericCharts = dashboard?.tabs.find((t) => t.component === "GENERIC-CHART-GROUP")?.chartList || [];
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-gray-50">
-          <h3 className="text-lg font-bold text-gray-900">Configured Charts</h3>
+  return (
+    <div className="space-y-10 pb-20">
+      {/* Overview Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white/60 backdrop-blur-md p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
+          <div className="bg-blue-50 p-3 rounded-xl text-blue-600">
+            <Building2 className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Instance</h3>
+            <p className="text-xl font-black text-gray-900">{branding?.clientName}</p>
+          </div>
         </div>
-        <div className="p-6">
-          <div className="space-y-8">
-            {dashboard?.tabs.map((tab, tabIdx) => (
-              <div key={tabIdx} className="space-y-4">
-                <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest">{tab.component}</h4>
-                <ul className="divide-y divide-gray-100 bg-gray-50/50 rounded-xl px-4">
-                  {tab.chartList.map((item, itemIdx) => (
-                    <li key={itemIdx} className="py-4 flex justify-between items-center">
-                      <div>
-                        <p className="font-semibold text-gray-900">{item.title}</p>
-                        <p className="text-sm text-gray-500 capitalize">{item.type}</p>
-                      </div>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {item.calc || "Custom"}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+        <div className="bg-white/60 backdrop-blur-md p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
+          <div className="bg-emerald-50 p-3 rounded-xl text-emerald-600">
+            <PieChart className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Charts Configured</h3>
+            <p className="text-xl font-black text-gray-900">
+              {dashboard?.tabs.reduce((acc, tab) => acc + tab.chartList.length, 0) || 0}
+            </p>
+          </div>
+        </div>
+        <div className="bg-white/60 backdrop-blur-md p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
+          <div className="bg-amber-50 p-3 rounded-xl text-amber-600">
+            <ZoomIn className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">GIS Zoom Level</h3>
+            <p className="text-xl font-black text-gray-900">{branding?.gis.zoom}</p>
           </div>
         </div>
       </div>
+
+      {/* JMP Charts Section */}
+      {jmpCharts.length > 0 && (
+        <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <JMPChartGroup charts={jmpCharts} />
+        </section>
+      )}
+
+      {/* Generic Charts Section */}
+      {genericCharts.length > 0 && (
+        <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+          <IndicatorChartSelector charts={genericCharts} />
+        </section>
+      )}
     </div>
   );
 }
