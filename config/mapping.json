@@ -1,0 +1,54 @@
+{
+  "questions": {
+    "year_conducted": 596240919,
+    "school_information": 634200919,
+    "school_type": 647020917,
+    "school_category": 634280919
+  },
+  "schoolInformation": {
+    "province": "province",
+    "school_type": "school_type",
+    "school_name": "school_name",
+    "school_code": "school_code",
+    "school_category": "school_category"
+  },
+  "cascades": {
+    "school_information": {
+      "levels": {
+        "province": 0,
+        "school_type": 1,
+        "school_name": 2,
+        "school_code": 3
+      },
+      "names": {
+        "province": "Province",
+        "school_type": "School Type",
+        "school_name": "School Name",
+        "school_code": "School Code"
+      }
+    }
+  },
+  "schoolTypeRanking": {
+    "has_ranking": ["early", "primary", "secondary", "community"],
+    "rankings": {
+      "early": 0,
+      "primary": 1,
+      "secondary": 3,
+      "community": 4
+    }
+  },
+  "geo": {
+    "levels": [{ "level": 0, "name": "NAME_1", "alias": "Province" }],
+    "center": [-9.6, 160.1],
+    "topojson": "solomon-island-topojson.json"
+  },
+  "monitoring": {
+    "round": 2024
+  },
+  "responseGrouper": {
+    "water": { "question_group": null, "category_type": "jmp" },
+    "sanitation": { "question_group": null, "category_type": "jmp" },
+    "hygiene": { "question_group": null, "category_type": "jmp" },
+    "toilet_category": { "question_group": 7, "category_type": null }
+  }
+}
