@@ -1,12 +1,5 @@
-import axios from "axios";
+import { api } from "@/lib/api";
 import { BrandingConfig, DashboardConfig } from "@/types/config";
-
-const isServer = typeof window === "undefined";
-const baseURL = isServer ? "http://backend:8000" : "/api";
-
-const api = axios.create({
-  baseURL,
-});
 
 export const configService = {
   getBranding: async (): Promise<BrandingConfig> => {

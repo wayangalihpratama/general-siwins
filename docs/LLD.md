@@ -42,10 +42,22 @@ The backend utilizes a prefix-less internal routing structure to allow maximum f
   - `GET /api/config`: Branding and global settings.
   - `GET /api/dashboard`: Dashboard layout.
   - `GET /api/geo/{filename}`: GIS assets.
+  - `GET /api/download/list`: Export job history.
+  - `GET /api/download/status?id={id}`: Job status tracking.
+  - `GET /api/download/data`: Trigger new async export.
+  - `GET /api/download/file/{filename}`: Retrieve generated file.
 
 ### 3.2. Configuration Service
 - Loads JSON files from the `/app/config` volume.
-- Provides synchronous and asynchronous access to configuration objects.
+### 3.3. Asynchronous Export System
+- **Worker**: Uses FastAPI `BackgroundTasks` for asynchronous Excel generation.
+- **Jobs Engine**: Tracked via a SQLite/PostgreSQL `jobs` table with statuses: `Pending`, `in Progress`, `Done`, `Failed`.
+- **Concurrency**: Managed at the thread level; generator tasks use fresh DB sessions to prevent lifecycle conflicts.
+
+### 3.4. Storage System
+The backend supports a tiered storage approach:
+- **Production**: Google Cloud Storage (GCS) for high-availability assets.
+- **Local/Development**: Fallback to local filesystem storage via the `STORAGE_LOCATION` environment variable (e.g., `./tmp/fake-storage`).
 
 ## 4. Frontend Implementation (Next.js 16 + Tailwind v4)
 

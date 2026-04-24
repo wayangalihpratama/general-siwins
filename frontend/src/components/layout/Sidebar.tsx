@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  LayoutDashboard, 
-  Map as MapIcon, 
-  FileText, 
-  Settings, 
-  Download, 
+import {
+  LayoutDashboard,
+  Map as MapIcon,
+  FileText,
+  Settings,
+  Download,
   HelpCircle,
   ChevronLeft,
   ChevronRight
@@ -19,8 +19,8 @@ const menuItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Maps", href: "/dashboard/maps", icon: MapIcon },
   { name: "Exports", href: "/dashboard/exports", icon: Download },
-  { name: "Documentation", href: "/dashboard/docs", icon: FileText },
-  { name: "Manage Data", href: "/dashboard/manage", icon: Settings },
+  { name: "Documentation", href: "/dashboard/documentation", icon: FileText },
+  { name: "Manage Data", href: "/dashboard/database", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -28,7 +28,7 @@ export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <aside 
+    <aside
       className={cn(
         "bg-white border-r border-gray-200 transition-all duration-300 flex flex-col h-screen sticky top-0",
         isCollapsed ? "w-20" : "w-64"
@@ -36,7 +36,7 @@ export default function Sidebar() {
     >
       <div className="p-6 flex items-center justify-between border-b border-gray-50">
         {!isCollapsed && <span className="font-bold text-gray-900 tracking-tight">Navigation</span>}
-        <button 
+        <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-500 transition-colors"
         >
@@ -53,17 +53,17 @@ export default function Sidebar() {
               href={item.href}
               className={cn(
                 "flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all group",
-                isActive 
-                  ? "bg-blue-50 text-blue-700 shadow-sm shadow-blue-100/50" 
+                isActive
+                  ? "bg-blue-50 text-blue-700 shadow-sm shadow-blue-100/50"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               )}
             >
-              <item.icon 
+              <item.icon
                 className={cn(
-                  "h-5 w-5 flex-shrink-0 transition-colors",
+                  "h-5 w-5 shrink-0 transition-colors",
                   isActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-600",
                   !isCollapsed && "mr-3"
-                )} 
+                )}
               />
               {!isCollapsed && <span>{item.name}</span>}
             </Link>
