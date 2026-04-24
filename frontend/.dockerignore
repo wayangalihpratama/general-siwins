@@ -1,3 +1,9 @@
-**
-!build
-!nginx
+node_modules
+.next
+out
+build
+.env
+.env.local
+.git
+.gitignore
+README.md
