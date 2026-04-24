@@ -45,29 +45,42 @@ def test_excel(file):
         raise HTTPException(status_code=404, detail="Not Valid Excel File")
 
 
-def run_download(session: Session, jobs: dict):
-    status = jobs.get("status")
-    payload = jobs["payload"]
-    # download start
-    out_file = payload
-    file, context = generate_download_data(
-        session=session, jobs=jobs, file=f"{DOWNLOAD_PATH}/{out_file}"
-    )
-    if file:
-        storage_folder = StorageFolder.download.value
-        output = upload(file, storage_folder, out_file)
-        status = JobStatus.done.value
-        payload = output
-    else:
-        status = JobStatus.failed.value
-    jobs = update_jobs(
-        session=session, id=jobs.get("id"), payload=payload, status=status
-    )
-    # write download log
-    job_id = f"job_id: {jobs['id']}"
-    job_status = f"status: {JOB_STATUS_TEXT.get(status)}"
-    log_content = f"{job_status} || {job_id} || {str(jobs)}"
-    write_log(log_filename="download_log", log_content=log_content)
+def run_download(jobs: dict):
+    session = next(get_session())
+    try:
+        status = jobs.get("status")
+        payload = jobs["payload"]
+        # download start
+        out_file = payload
+
+        # Ensure directory exists
+        if not os.path.exists(DOWNLOAD_PATH):
+            os.makedirs(DOWNLOAD_PATH, exist_ok=True)
+
+        file, context = generate_download_data(
+            session=session, jobs=jobs, file=f"{DOWNLOAD_PATH}/{out_file}"
+        )
+        if file:
+            storage_folder = StorageFolder.download.value
+            output = upload(file, storage_folder, out_file)
+            status = JobStatus.done.value
+            payload = output
+        else:
+            status = JobStatus.failed.value
+
+        jobs = update_jobs(
+            session=session, id=jobs.get("id"), payload=payload, status=status
+        )
+        # write download log
+        job_id = f"job_id: {jobs['id']}"
+        job_status = f"status: {JOB_STATUS_TEXT.get(status)}"
+        log_content = f"{job_status} || {job_id} || {str(jobs)}"
+        write_log(log_filename="download_log", log_content=log_content)
+    except Exception as e:
+        print(f"ERROR in run_download: {str(e)}")
+        write_log(log_filename="download_error", log_content=str(e))
+    finally:
+        session.close()
 
 
 @file_route.get(
@@ -104,6 +117,9 @@ async def generate_file(
         description="format: school_type name \
             (filter by shcool type)",
     ),
+    search: Optional[str] = Query(
+        None, description="partial search for school name or code"
+    ),
 ):
     TESTING = os.environ.get("TESTING")
     tags = []
@@ -125,6 +141,8 @@ async def generate_file(
         tags.append({"q": "Province", "o": ", ".join(prov)})
     if sctype:
         tags.append({"q": "School type", "o": ", ".join(sctype)})
+    if search:
+        tags.append({"q": "Search query", "o": search})
     res = add_jobs(
         session=session,
         payload=f"download-{out_file}.xlsx",
@@ -136,12 +154,13 @@ async def generate_file(
             "school_type": sctype,
             "tags": tags,
             "data_ids": data_ids,
+            "search": search,
         },
     )
     if TESTING:
-        run_download(session=session, jobs=res)
+        run_download(res)
         return res
-    background_tasks.add_task(run_download, session, res)
+    background_tasks.add_task(run_download, res)
     return res
 
 

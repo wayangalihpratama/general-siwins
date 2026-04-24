@@ -50,6 +50,7 @@ def generate_download_data(session: Session, jobs: dict, file: str):
         prov=info.get("province"),
         sctype=info.get("school_type"),
         data_ids=info.get("data_ids"),
+        search=info.get("search"),
     )
     filtered_data_ids = [d.id for d in filtered_data]
     # fetch ar-category view
@@ -86,13 +87,21 @@ def generate_download_data(session: Session, jobs: dict, file: str):
     # generate file
     df = pd.DataFrame(data)
     questions = get_excel_headers(session=session)
-    for q in questions:
-        if q not in list(df):
-            df[q] = ""
+
+    # Ensure mandatory columns exist even if data is empty
     col_names = rearange_columns(
         col_names=questions, computed_column_names=computed_column_names
     )
-    df = df[col_names]
+
+    if df.empty:
+        # Create empty DF with correct columns
+        df = pd.DataFrame(columns=col_names)
+    else:
+        for q in questions:
+            if q not in list(df):
+                df[q] = ""
+        # Filter for existing columns to avoid Indexing error
+        df = df[col_names]
     # rename columns, remove question id
     df = df.rename(
         columns=(lambda col: col.split("|")[1].strip() if "|" in col else col)
@@ -137,5 +146,5 @@ def generate_download_data(session: Session, jobs: dict, file: str):
         }
     )
     worksheet.merge_range("A1:B1", "Context", merge_format)
-    writer.save()
+    writer.close()
     return file, context

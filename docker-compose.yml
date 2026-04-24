@@ -35,6 +35,7 @@ services:
       - MAILJET_APIKEY=${MAILJET_APIKEY}
       - NOTIFICATION_RECIPIENTS=S{NOTIFICATION_RECIPIENTS}
       - SIWINS_INSTANCE=${SIWINS_INSTANCE}
+      - STORAGE_LOCATION=./tmp/fake-storage
     depends_on:
       db:
         condition: service_healthy
