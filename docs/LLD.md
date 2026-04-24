@@ -8,6 +8,7 @@ Gen-SIWINS follows a config-driven architecture where application behavior and a
 config/
 ├── branding.json       # Branding, colors, and GIS settings
 ├── dashboard.json      # Dashboard layout and chart definitions
+├── mapping.json        # Domain mapping (Question IDs, Cascades, etc.)
 ├── forms.json          # Questionnaire definition
 ├── geo/                # GeoJSON/TopoJSON files
 └── assets/             # Client-specific logos and images
