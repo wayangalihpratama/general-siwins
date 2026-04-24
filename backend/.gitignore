@@ -1,0 +1,8 @@
+/.ipynb_checkpoints
+/.pip
+/.mypy_cache
+/log.txt
+__pycache__
+.coverage
+.coverage.*
+.category.json

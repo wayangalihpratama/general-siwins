@@ -1,0 +1,45 @@
+# Environment
+.env
+.env.*
+!.env.example
+env.template
+
+# Agent Docs (Local state - NOT in git)
+agent_docs/
+.agent/
+.gemini/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.pip/
+venv/
+.venv/
+
+# Node
+node_modules/
+.next/
+out/
+build/
+.cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+.docker-sync/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project Specific
+/todelete
+.category.json
+notify.team.sh
+pgadmin4/
+db/docker-entrypoint-initdb.d/
+backend/tmp/
