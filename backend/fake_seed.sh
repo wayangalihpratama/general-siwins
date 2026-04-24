@@ -6,6 +6,6 @@ python -m seeder.cascade
 python -m seeder.fake_datapoint 100
 
 INSTANCE="$SIWINS_INSTANCE"
-CATEGORIES="./source/"${INSTANCE}"/category.json"
+CATEGORIES="/app/config/category.json"
 
 akvo-responsegrouper --config "${CATEGORIES}"
