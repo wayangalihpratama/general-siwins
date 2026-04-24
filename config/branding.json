@@ -1,0 +1,14 @@
+{
+  "clientName": "Solomon Islands WASH in Schools",
+  "instanceName": "Solomon Islands",
+  "theme": {
+    "primary_color": "#005a9c",
+    "secondary_color": "#f1c40f",
+    "logo_url": "/assets/logo.png"
+  },
+  "gis": {
+    "center": [-9.6, 160.1],
+    "zoom": 6,
+    "topojson": "/api/geo/solomon-island-topojson.json"
+  }
+}

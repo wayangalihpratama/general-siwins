@@ -16,6 +16,7 @@ from routes.file import file_route
 from routes.sync import sync_route
 from templates.main import template_route
 from AkvoResponseGrouper.routes import collection_route
+from routes.config import config_route
 
 from source.main import main_config, geoconfig
 
@@ -83,7 +84,6 @@ class Settings(BaseSettings):
 
 settings = Settings()
 app = FastAPI(
-    root_path="/api",
     title="SI-WINS",
     description="Solomon Island - WASH in Schools",
     version="1.0.0",
@@ -108,6 +108,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(config_route)
 app.include_router(cascade_route)
 app.include_router(option_route)
 app.include_router(question_route)

@@ -1,3 +1,23 @@
-FROM nginx:1.21.0-alpine
-COPY ./build /usr/share/nginx/html
-COPY ./nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+FROM node:20
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y libc6
+
+# Copy package files
+COPY package*.json ./
+
+# Install ALL dependencies inside the container
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Build the production application
+RUN npm run build
+
+EXPOSE 3000
+
+# Start the production server
+CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0"]

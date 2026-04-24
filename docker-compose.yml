@@ -1,15 +1,12 @@
 ---
 version: "3.9"
+
 services:
-  mainnetwork:
-    image: alpine:3.14.0
-    command: ["tail", "-f", "/dev/null"]
   db:
     image: postgres:12-alpine
     volumes:
       - ./db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - pg-data:/var/lib/postgresql/data
-      - ./db/script:/script:ro
     environment:
       - POSTGRES_PASSWORD=password
     ports:
@@ -19,12 +16,16 @@ services:
       interval: 2s
       timeout: 5s
       retries: 5
+
   backend:
     image: python:3.8.5
     working_dir: /app
     command: ["./dev.sh"]
+    ports:
+      - 8000:8000
     volumes:
       - ./backend:/app:delegated
+      - ./config:/app/config:delegated
     environment:
       - DATABASE_URL=postgresql://siwins:password@db:5432/siwins
       - AUTH0_CLIENT=$AUTH0_CLIENT
@@ -37,13 +38,20 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    network_mode: service:mainnetwork
+
   frontend:
-    image: akvo/akvo-node-18-alpine:20220923.084347.0558ee6
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     working_dir: /app
-    command: ["./start.sh"]
+    ports:
+      - 3000:3000
     volumes:
       - ./frontend:/app:delegated
-    network_mode: service:mainnetwork
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+
 volumes:
   pg-data:

@@ -3,7 +3,7 @@ from sqlalchemy import text
 from db.connection import engine
 from typing import List, Optional
 
-from source.main import main_config, INSTANCE_NAME
+from source.main import main_config
 
 SchoolInformationEnum = main_config.SchoolInformationEnum
 CascadeLevels = main_config.CascadeLevels
@@ -24,7 +24,7 @@ def refresh_materialized_view_query():
 
 
 def refresh_materialized_data():
-    categories = f"./source/{INSTANCE_NAME}/category.json"
+    categories = "/app/config/category.json"
     command = f"akvo-responsegrouper --config {categories}"
     subprocess.check_output(command, shell=True, text=True)
 
