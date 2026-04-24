@@ -1,29 +1,24 @@
-"use client";
+import InteractiveMap from "@/components/ui/Map/InteractiveMap";
+import { Map as MapIcon } from "lucide-react";
 
-import dynamic from "next/dynamic";
-
-const InteractiveMap = dynamic(
-  () => import("@/components/ui/Map/InteractiveMap"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="h-full w-full bg-gray-100 animate-pulse flex items-center justify-center rounded-2xl">
-        <span className="text-gray-400 font-medium">Loading Map...</span>
-      </div>
-    )
-  }
-);
-
-export default function MapsView() {
+export default function MapsPage() {
   return (
-    <div className="h-[calc(100vh-12rem)] flex flex-col space-y-6">
-      <div className="flex justify-between items-center">
-         <div>
-            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Geospatial Explorer</h2>
-            <p className="text-gray-500">Visualizing WASH infrastructure across provinces.</p>
-         </div>
+    <div className="h-[calc(100vh-160px)] flex flex-col space-y-6">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/40 backdrop-blur-sm p-6 rounded-3xl border border-gray-100 shrink-0">
+        <div className="flex items-center gap-4">
+          <div className="bg-blue-600 p-3 rounded-2xl text-white shadow-lg shadow-blue-200">
+            <MapIcon className="w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="text-xl font-black text-gray-900 tracking-tight">Geospatial Intelligence</h1>
+            <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest text-[10px]">Visualizing school-level performance indicators</p>
+          </div>
+        </div>
       </div>
-      <div className="flex-1 min-h-0">
+
+      {/* Map Content */}
+      <div className="flex-1 min-h-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <InteractiveMap />
       </div>
     </div>
