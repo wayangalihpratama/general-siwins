@@ -82,6 +82,9 @@ def get_paginated_data(
         description="format: school_type name \
             (filter by shcool type)",
     ),
+    search: Optional[str] = Query(
+        None, description="partial search for school name or code"
+    ),
     session: Session = Depends(get_session),
 ):
     # check query
@@ -92,6 +95,7 @@ def get_paginated_data(
         options=options,
         prov=prov,
         sctype=sctype,
+        search=search,
         skip=(perpage * (page - 1)),
         perpage=perpage,
     )
@@ -144,7 +148,7 @@ def get_maps_init(
         # current=True,
         skip=(perpage * (page - 1)),
         perpage=perpage,
-        year_conducted=[CURRENT_MONITORING_ROUND]
+        year_conducted=[CURRENT_MONITORING_ROUND],
     )
     # handle pagination
     count = page_data.get("count")

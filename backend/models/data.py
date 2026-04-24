@@ -63,6 +63,10 @@ class DataResponse(BaseModel):
 
 class MapsData(BaseModel):
     id: int
+    identifier: Optional[str] = None
+    school_information: Optional[List[str]] = None
+    year_conducted: Optional[int] = None
+    geo: Optional[List[float]] = None
     # ** REMEMBER TO UPDATE if answer value updated
     answer: Union[
         int, float, str, bool, dict, List[str], List[int], List[float], None
@@ -191,15 +195,15 @@ class Data(Base):
             "form": self.form,
             "registration": self.registration,
             "current": self.current,
-            "geo": {"lat": self.geo[0], "long": self.geo[1]}
-            if self.geo
-            else None,
+            "geo": (
+                {"lat": self.geo[0], "long": self.geo[1]} if self.geo else None
+            ),
             "year_conducted": self.year_conducted,
             "school_information": self.school_information,
             "created": self.created.strftime("%B %d, %Y"),
-            "updated": self.updated.strftime("%B %d, %Y")
-            if self.updated
-            else None,
+            "updated": (
+                self.updated.strftime("%B %d, %Y") if self.updated else None
+            ),
             "answer": [a.formatted for a in self.answer],
             "history": [h.formatted for h in self.history],
         }
@@ -209,9 +213,9 @@ class Data(Base):
         return {
             "id": self.id,
             "name": self.name,
-            "geo": {"lat": self.geo[0], "long": self.geo[1]}
-            if self.geo
-            else None,
+            "geo": (
+                {"lat": self.geo[0], "long": self.geo[1]} if self.geo else None
+            ),
             "year_conducted": self.year_conducted,
             "school_information": self.school_information,
         }
@@ -221,10 +225,9 @@ class Data(Base):
         return {
             "id": self.id,
             "identifier": self.identifier,
-            # TODO:: DELETE commented code
-            # "school_information": self.school_information,
-            # "year_conducted": self.year_conducted,
-            # "geo": self.geo,
+            "school_information": self.school_information,
+            "year_conducted": self.year_conducted,
+            "geo": self.geo,
             "answer": {},
         }
 

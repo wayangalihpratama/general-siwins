@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 from typing_extensions import TypedDict
 from sqlalchemy.orm import Session
-from sqlalchemy import desc, and_, select, or_
+from sqlalchemy import desc, and_, select, or_, Text
 from sqlalchemy.sql.expression import false
 from models.data import Data, DataDict
 from models.answer import Answer
@@ -110,6 +110,7 @@ def get_all_data(
     data_ids: Optional[List[int]] = None,
     prov: Optional[List[str]] = None,
     sctype: Optional[List[str]] = None,
+    search: Optional[str] = None,
     count: Optional[bool] = False,
     year_conducted: Optional[List[int]] = [],
     # pagination param
@@ -144,6 +145,11 @@ def get_all_data(
     if sctype:
         or_query = or_(Data.school_information.contains([v]) for v in sctype)
         data = data.filter(or_query)
+    if search:
+        search_query = f"%{search}%"
+        data = data.filter(
+            Data.school_information.cast(Text).ilike(search_query)
+        )
     if count:
         return data.count()
     # pagination param
